@@ -1,55 +1,48 @@
-import React, {useEffect, useState} from 'react';
-import { View, Text, Button } from 'react-native';
+import React, { useState, useEffect } from 'react';
+import { View, Text, Button, FlatList } from 'react-native';
 import LayoutExample from './Layout';
-import { faunaClient } from './faunadbConfig';
-import * as FaunaDB from 'faunadb';
+import { useNavigation } from '@react-navigation/native';
+import { FaunaClient } from './fauna';
+import { Config } from './dotenv';
 
-const myCollection = FaunaDB.Collection('products');
 
+const HomeScreen = () => {
+    const navigation = useNavigation();
+    const [tasks, setTasks] = useState([])
 
-const useHomeScreenData = () => {
-    const [data, setData] = useState(null);
-
-    console.log("data---->", data)
+    const useFetchAllTasks = async () => {
+        const faunaClient = new FaunaClient(Config.FAUNA_API_KEY);
+    
+        try {
+            const { data: tasks } = await faunaClient.query(`Tasks.all`) 
+            setTasks(tasks)
+        } catch (error) {
+            console.error(error)
+        }
+    }
 
     useEffect(() => {
-        fetchData();
-      }, []);
+        useFetchAllTasks()
+    }, [])
 
-    const fetchData = async () => {
-        try {
-            const response = await faunaClient.query(
-                FaunaDB.Map(
-                    FaunaDB.Paginate(FaunaDB.Documents(myCollection)),
-                  FaunaDB.Lambda((x) => FaunaDB.Get(x))
-                )
-              )
-            
-            setData(response.data);
-                
-            } catch (error) {
-                console.log(error)
-            }
-        };
-
-        return {
-            data,
-            setData
-        }
-}
-
-const HomeScreen = ({ navigation }) => {
-
-    const { data } = useHomeScreenData();
-    console.log(data);
+    console.log("tasks --->", tasks);
 
     return (
         <LayoutExample>
             <View>
-                <Text>Welcome to the Home Screen!</Text>
+                <Text>Your Tasks</Text>
+                {
+                    tasks?.length > 0 ?
+                    <FlatList
+                          data={tasks}
+                          renderItem={({item}) => <Text> - {item.taskName}</Text>}
+                    />
+                    : 
+                    <Text>Looks like you dont have any task added</Text>
+                }
                 <Button
-                    title="Go to Details"
-                    onPress={() => navigation.navigate('Details')}
+                    title="Add Task+"
+                    onPress={() => navigation.navigate('AddTask')}
                 />
             </View>
         </LayoutExample>
