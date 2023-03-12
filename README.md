@@ -193,9 +193,12 @@
    ```
 
 6. Now start the app. For this demo we will use the web version.
-   `        npm run web
-   `
-   > P.S: You might need to install `weback`. Please follow the errors in the console if any.
+
+```
+  npm run web
+```
+
+> P.S: You might need to install `weback`. Please follow the errors in the console if any.
 
 ### Fauna Setup
 
@@ -217,7 +220,7 @@ We will add entries to this collection via our app.
 
 For this demo we will use Faunas FQL service via the endpoint `https://db.fauna.com/query/1`.
 
-1.  Lets make a `FaunaClientService` class to do all the heavy lifting for us.
+1.  Lets make a `FaunaClient` class to do all the heavy lifting for us.
 
         ```
         export class FaunaClient {
@@ -414,3 +417,15 @@ Thats it! Now we can use it in our app.
 
 6. Now we can see the data being puleld and displayed on our app.
    ![Add Task](https://i.imgur.com/mIRZ3te.png)
+
+### Performing Queries in Fauna
+
+- TODO:
+
+### Use A Fauna Provider
+
+- TODO:
+
+### Clean up
+
+- TODO:
